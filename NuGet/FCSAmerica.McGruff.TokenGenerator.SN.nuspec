@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>FCSAmerica.McGruff.TokenGenerator</id>
+        <version>2.0.0</version>
+        <title>FCSAmerica.McGruff.TokenGenerator</title>
+        <authors>Farm Credit Services of America</authors>
+        <owners>Farm Credit Services of America</owners>
+        <projectUrl>https://fcsamerica.visualstudio.com/DefaultCollection/McGruff</projectUrl>
+        <iconUrl>http://teamtest/NuGetBioStar.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A lightweight library for generating a ServiceToken and AuditInfo token.  This library can be leveraged by .NET applications greater than or equal to version 3.5.</description>
+        <copyright>Copyright FCSA 2015</copyright>
+        <tags>McGruff Authentication Federation Multi-Tenant</tags>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Web" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Configuration" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Web.Extensions" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src="..\Source\McGruff\FCSAmerica.McGruff.TokenGenerator\bin\Debug\FCSAmerica.McGruff.TokenGenerator.dll" target="lib\net35-client\FCSAmerica.McGruff.TokenGenerator.dll" />
+        <file src="..\Source\McGruff\FCSAmerica.McGruff.TokenGenerator\bin\Debug\FCSAmerica.McGruff.TokenGenerator.pdb" target="lib\net35-client\FCSAmerica.McGruff.TokenGenerator.pdb" />
+        <file src="..\Source\McGruff\FCSAmerica.McGruff.TokenGenerator\Readme.txt" target="Readme.txt" />
+    </files>
+</package>
