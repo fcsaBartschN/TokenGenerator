@@ -20,8 +20,8 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="..\Source\McGruff\FCSAmerica.McGruff.TokenGenerator\bin\FCSAmerica.McGruff.TokenGenerator.dll" target="lib\net35-client\FCSAmerica.McGruff.TokenGenerator.dll" />
-        <file src="..\Source\McGruff\FCSAmerica.McGruff.TokenGenerator\bin\FCSAmerica.McGruff.TokenGenerator.pdb" target="lib\net35-client\FCSAmerica.McGruff.TokenGenerator.pdb" />
-        <file src="..\Source\McGruff\FCSAmerica.McGruff.TokenGenerator\Readme.txt" target="Readme.txt" />
+        <file src="..\FCSAmerica.McGruff.TokenGenerator\bin\FCSAmerica.McGruff.TokenGenerator.dll" target="lib\net35-client\FCSAmerica.McGruff.TokenGenerator.dll" />
+        <file src="..\FCSAmerica.McGruff.TokenGenerator\bin\FCSAmerica.McGruff.TokenGenerator.pdb" target="lib\net35-client\FCSAmerica.McGruff.TokenGenerator.pdb" />
+        <file src="..\FCSAmerica.McGruff.TokenGenerator\Readme.txt" target="Readme.txt" />
     </files>
 </package>
