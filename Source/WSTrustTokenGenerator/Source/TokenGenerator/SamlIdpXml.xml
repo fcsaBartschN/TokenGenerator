@@ -1,0 +1,109 @@
+﻿<t:RequestSecurityTokenResponse xmlns:t="http://schemas.xmlsoap.org/ws/2005/02/trust">
+  <t:Lifetime>
+    <wsu:Created xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">2016-04-13T20:53:08.988Z</wsu:Created>
+    <wsu:Expires xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">2016-04-13T21:53:08.988Z</wsu:Expires>
+  </t:Lifetime>
+  <wsp:AppliesTo xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy">
+    <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+      <wsa:Address>https://teststs.fcsamerica.net/</wsa:Address>
+    </wsa:EndpointReference>
+  </wsp:AppliesTo>
+  <t:RequestedSecurityToken>
+    <saml:Assertion MajorVersion="1" MinorVersion="1" AssertionID="_b1d4c154-7054-4163-8095-b16018f218ac" Issuer="http://fs.fcsamerica.com/adfs/services/trust" IssueInstant="2016-04-13T20:53:09.004Z" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion">
+      <saml:Conditions NotBefore="2016-04-13T20:53:08.988Z" NotOnOrAfter="2016-04-13T21:53:08.988Z">
+        <saml:AudienceRestrictionCondition>
+          <saml:Audience>https://teststs.fcsamerica.net/</saml:Audience>
+        </saml:AudienceRestrictionCondition>
+      </saml:Conditions>
+      <saml:AttributeStatement>
+        <saml:Subject>
+          <saml:SubjectConfirmation>
+            <saml:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:bearer</saml:ConfirmationMethod>
+          </saml:SubjectConfirmation>
+        </saml:Subject>
+        <saml:Attribute AttributeName="name" AttributeNamespace="http://schemas.xmlsoap.org/ws/2005/05/identity/claims">
+          <saml:AttributeValue>FCSAMERICA\BoyerC</saml:AttributeValue>
+        </saml:Attribute>
+        <saml:Attribute AttributeName="emailaddress" AttributeNamespace="http://schemas.xmlsoap.org/ws/2005/05/identity/claims">
+          <saml:AttributeValue>Chad.Boyer@fcsamerica.com</saml:AttributeValue>
+        </saml:Attribute>
+      </saml:AttributeStatement>
+      <saml:AuthenticationStatement AuthenticationMethod="urn:federation:authentication:windows" AuthenticationInstant="2016-04-13T20:53:08.988Z">
+        <saml:Subject>
+          <saml:SubjectConfirmation>
+            <saml:ConfirmationMethod>urn:oasis:names:tc:SAML:1.0:cm:bearer</saml:ConfirmationMethod>
+          </saml:SubjectConfirmation>
+        </saml:Subject>
+      </saml:AuthenticationStatement>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+          <ds:Reference URI="#_b1d4c154-7054-4163-8095-b16018f218ac">
+            <ds:Transforms>
+              <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+              <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+            <ds:DigestValue>RGRS1r5umv/J0bC0VUyfgxv7HzS3BfJytKRFjjjkLGw=</ds:DigestValue>
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue>WFy06k2x0SYFZJ8iuIP92CHRd3Md3l7mGC7ypC0Y1+Dna7+WBtO/UmCll21tsswRVuc9z84RArTyOrDvsryxdB/xwIlO6ybyQ1/k1XuxgsS5PFmIe9LEnClAi6ZKxHb6kBApVsebpFQmeQspW7Cg/q+fX9x2FgmX+0VDRTjpWC9sDlWfGNckqfIoZFtbQqYRGQRiUq9JWnABPGUSdwmL9AeDbqV6TcycQOL4Nnk73348aqzDgylTB7YOFzciwWSAx3OFkdlgnAnZcAG6vh5wAMnlm0r+RJfYA6N2usCVZgpweJ7RRYhefbUqLjsENIkUk91bR/XAOSS4LcekUXwMWQ==</ds:SignatureValue>
+        <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+          <X509Data>
+            <X509Certificate>MIIC3jCCAcagAwIBAgIQOHNxidKPBZdCW8y7VyaNQTANBgkqhkiG9w0BAQsFADArMSkwJwYDVQQDEyBBREZTIFNpZ25pbmcgLSBmcy5mY3NhbWVyaWNhLmNvbTAeFw0xNDA5MTUwMTM3MjVaFw0xOTA5MTQwMTM3MjVaMCsxKTAnBgNVBAMTIEFERlMgU2lnbmluZyAtIGZzLmZjc2FtZXJpY2EuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAt5j555kBGR7aHe7bbp9ib92LOBDOmVfOs6d6qbWVSWJZzGJ2d8RImj0RmAo6bZW42IrIT8oTZ3YKPKD0J8r+3hfmPikM9zNi5c8HdRS39poVbKKMT21lqitVt+6ZVe4nUVk6DKG3Vlv4ZwLXhCnSN7ncIoaVWVwrsbGQASWYsF4ytdpS06gCnt0oP3HjTlwOim+dRD3OOIfRqQfbLDgD+vq9afdQlbRoDxGFhsMyD99pg9vRztiCBuorjk57Mgp9TCF6qQNt5GXvv3hxgk1vtobuCGOeWTnl+LqSL3qT+GD8YoDwdREDj22kou1f2Io5c2ydycsVzM0Yo0dpk5oxPwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAEBBrF1gxK9okS9SPUrJoHoW6fZGF7VAqYAMdE4Y+916UG29iGXUK8mJGLuyH0v04HE/Q4vF81vrOpMrBZ3umdsZBpZntLpXcUU4O4scT1azS+RpxyCIFSIMeIKmGibkb9Xkn/IAC8FwYpwdjjoy6PctMkAM28aXryP6HInFVheMvQrTzdQj79BjYY2KkIu26qQjbdDNB2k6QmA5w1dBE6/iuRzSAMMRQNo+owv5+ZK8Ls1bvFA57jeXJI7A/mC8ioKczuWUIN7jEB0QQBFUwIcPKC6+awkRaG9ok6so/U0a2oy9PM3mI5BrZExxzIXE/zb+WgTnm99FzTmQNwu2lv</X509Certificate>
+          </X509Data>
+        </KeyInfo>
+      </ds:Signature>
+    </saml:Assertion>
+  </t:RequestedSecurityToken>
+  <t:TokenType>urn:oasis:names:tc:SAML:1.0:assertion</t:TokenType>
+  <t:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</t:RequestType>
+  <t:KeyType>http://schemas.xmlsoap.org/ws/2005/05/identity/NoProofKey</t:KeyType>
+</t:RequestSecurityTokenResponse>
+
+
+
+<Assertion ID="_c51f449a-4966-4ac0-a4c2-f639d11c784d" IssueInstant="2016-04-13T20:59:40.765Z" Version="2.0" xmlns="urn:oasis:names:tc:SAML:2.0:assertion">
+  <Issuer>http://testfs.fcsamerica.com/adfs/services/trust</Issuer>
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:SignedInfo>
+      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+      <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+      <ds:Reference URI="#_c51f449a-4966-4ac0-a4c2-f639d11c784d">
+        <ds:Transforms>
+          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+          <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+        <ds:DigestValue>Pe4MYcnCdGdEZLGyyLvJLwWD75qAGobcz3+yzRZs6cY=</ds:DigestValue>
+      </ds:Reference>
+    </ds:SignedInfo>
+    <ds:SignatureValue>F18dxH0Ipab69An/jaGTQnN8y6M8uNDHhMlGO9sV9dHZVpEBm4p02KBQnB8p9QpAk5g47GgHnAuwO8Aft3uC13AXjirsMstURKGIznpxknZD4P7ANT/ZdL7o53DsXlmbisaCQcnpoavnZC5H+XpwuFBTgFb2gg6a9LnDiO9f1f/IIz8AQQaD6fPU7Q7y0rTnNMBeQ8ytD3qBjyi98/h/6HUmwYgDhrFKVwHH/9MP0a+wImol6N0WUaNZeBueogyjhC7m27lqET98soxBRz/RxKfH+XYMZrepFLjPdNpRVYiKDgxeqK2DU6sOfDtc+wrAESDfxVg3IAtv+S+511tAxw==</ds:SignatureValue>
+    <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+      <ds:X509Data>
+        <ds:X509Certificate>MIIC5jCCAc6gAwIBAgIQIHMMHrrpv5VA/UPAfPC/0TANBgkqhkiG9w0BAQsFADAvMS0wKwYDVQQDEyRBREZTIFNpZ25pbmcgLSB0ZXN0ZnMuZmNzYW1lcmljYS5jb20wHhcNMTQwOTE0MjMxOTE3WhcNMTkwOTEzMjMxOTE3WjAvMS0wKwYDVQQDEyRBREZTIFNpZ25pbmcgLSB0ZXN0ZnMuZmNzYW1lcmljYS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDAqCXJx186FKWjw81/VNy4kKbi3R5ReOOrhJfiSVj34P6w5r2KVk+pparB80Un/lY6kWase1fHg27B0mO6eENmB/lSpQpgy50RBa4G1P6M6PmiOTWVe3jlqLZeuaI3MnIoD4qe2OmV70Cd0H20tAYuatnyXqSZ6i3OIcgNCX9ofnFcHpTD6SRHym5MXpcCqKtjB+Z58r0McWsr/pc9EryGOaVv1tlFUq5cQdx7PmKWG4e3rdB8C/iS/b4dr/DQ9V3pF3hqmuDSgc1D7gsxrfZygXaG96pIcUaHtacznCGuOpF8O/IC3tHY4ioLeyv80WP3+Q/YRo2Y/vErUsPB6WYlAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAJgW29uRf4CROb8P2ihw7fr1RrNlG7eQTecGKVrrQmUyBC68sjqK1L+thRHmY+T1loHg4Uo7rJFgzkttha5A+MvMTOeQXX/lgVqLx/dcH8/ZOcyTrtWs75il2hsBGlLHfy0EA6SRaBLtGZiSollkktds2l4s7D+8AjYM+nPSQrMGPNnupdyA026AnrWZVPTeTcym6t2/pjwqX+8Vapjag5IGpkrGRGC42Grhz88VtYUyP85lMsLXQQkEad9P4wdPKDJhkGKGWUvbTPXjStDO3v3p0IQZBljeo8bjPNF5FHSmHwo/07yX6rZ5tZweIgwMpG+VrNKxgIKe3NnJXOLe7pg=</ds:X509Certificate>
+      </ds:X509Data>
+    </KeyInfo>
+  </ds:Signature>
+  <Subject>
+    <SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+      <SubjectConfirmationData NotOnOrAfter="2016-04-13T21:04:40.765Z" />
+    </SubjectConfirmation>
+  </Subject>
+  <Conditions NotBefore="2016-04-13T20:59:40.765Z" NotOnOrAfter="2016-04-13T21:59:40.765Z">
+    <AudienceRestriction>
+      <Audience>https://teststs.fcsamerica.net/</Audience>
+    </AudienceRestriction>
+  </Conditions>
+  <AttributeStatement>
+    <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+      <AttributeValue>Chad.Boyer@fcsamerica.com</AttributeValue>
+    </Attribute>
+  </AttributeStatement>
+  <AuthnStatement AuthnInstant="2016-04-13T20:59:40.452Z">
+    <AuthnContext>
+      <AuthnContextClassRef>urn:federation:authentication:windows</AuthnContextClassRef>
+    </AuthnContext>
+  </AuthnStatement>
+</Assertion>

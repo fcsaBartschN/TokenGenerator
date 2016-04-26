@@ -85,6 +85,11 @@ namespace FCSAmerica.McGruff.TokenGenerator
             set { _serviceToken.IdentityProvider = value; }
         }
 
+        public string IdpTokenOverride
+        {
+            get { return _serviceToken.IdpTokenOverride; }
+            set { _serviceToken.IdpTokenOverride = value; }
+        }
 
         public int RefreshMinutesBeforeExpire
         {

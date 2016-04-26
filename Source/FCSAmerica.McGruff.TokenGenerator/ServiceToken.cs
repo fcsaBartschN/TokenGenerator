@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.Script.Services;
 using System.Xml;
 
 namespace FCSAmerica.McGruff.TokenGenerator
@@ -72,6 +73,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
                 get { return _identityProvider; }
                 set { _identityProvider = value; }
             }
+
 
             private string _applicationName;
 
@@ -172,6 +174,12 @@ namespace FCSAmerica.McGruff.TokenGenerator
                 set { _refreshMinutesBeforeExpire = value; }
             }
 
+            private string _idpTokenOverride;
+            public string IdpTokenOverride
+            {
+                get { return _idpTokenOverride;  }
+                set { _idpTokenOverride = value; }
+            }
 
             public ServiceToken(string ecsServiceAddress, NetworkCredential credential, string applicationName, string partnerName)
             {
@@ -200,6 +208,8 @@ namespace FCSAmerica.McGruff.TokenGenerator
                     {
                         var request = GetWebRequest(ECSServiceAddress);
                         string json = GetResponseContent(request.GetResponse());
+                        request.Abort();
+                       
                         JavaScriptSerializer serializer = new JavaScriptSerializer();
                         var list = serializer.Deserialize<Dictionary<string, object>>(json);
 
@@ -228,13 +238,16 @@ namespace FCSAmerica.McGruff.TokenGenerator
 
 
             private HttpWebRequest _request;
+            private CookieContainer _cookieContainer;
             public WebRequest GetWebRequest(string uri)
             {
+                int tmp = ServicePointManager.DefaultConnectionLimit;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
                 request.AllowAutoRedirect = true;
 
-                cookieContainer = cookieContainer ?? new CookieContainer();
-                request.CookieContainer = cookieContainer;
+
+                _cookieContainer = _cookieContainer ?? new CookieContainer();
+                request.CookieContainer = _cookieContainer;
 
                 if (NetworkCredential != null)
                 {
@@ -245,11 +258,17 @@ namespace FCSAmerica.McGruff.TokenGenerator
                         _credentialUri = GetCredentialHost(uri);
                     }
 
-                    credentialCache.Add(new Uri(_credentialUri), "Negotiate", NetworkCredential);
+                    credentialCache.Add(new Uri(_credentialUri), "Digest", NetworkCredential);
+                    credentialCache.Add(new Uri(_credentialUri), "Kerberos", NetworkCredential);
                     credentialCache.Add(new Uri(_credentialUri), "NTLM", NetworkCredential);
-                    credentialCache.Add(new Uri(_credentialUri), "Forms", NetworkCredential);
-                  
-                     request.Credentials = credentialCache;
+                    credentialCache.Add(new Uri(_credentialUri), "Basic", NetworkCredential);
+                    credentialCache.Add(new Uri(_credentialUri), "Negotiate", NetworkCredential);
+                   
+                    request.Credentials = credentialCache;
+                   // request.PreAuthenticate = true;
+
+                    //string basicCredentialsEncoded = Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(NetworkCredential.UserName + ":" + NetworkCredential.Password));
+                    //request.Headers.Add("Authorization", "Basic " + basicCredentialsEncoded);
                 }
                 else
                 {
@@ -281,8 +300,17 @@ namespace FCSAmerica.McGruff.TokenGenerator
                 {
                     body = reader.ReadToEnd();
                 }
+
                 var stsUrl = FindSTSUrlForm(body);
                 var idpToken = GetTokenFromBody(body);
+
+                if (String.IsNullOrEmpty(idpToken) || !String.IsNullOrEmpty(IdpTokenOverride))
+                {
+                    idpToken = IdpTokenOverride;
+                }
+
+                response.Close();
+                request.Abort();
 
                 _token = GetSTSTokenFromIdpToken(stsUrl, idpToken, true);
 
@@ -297,6 +325,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
 
                 string auditInfo = GetResponseContent(request.GetResponse());
 
+                request.Abort();
                 return auditInfo;
             }
 
@@ -310,12 +339,14 @@ namespace FCSAmerica.McGruff.TokenGenerator
                         content = reader.ReadToEnd();
                     }
                 }
+                response.Close();
                 return content;
             }
 
             public string GetSTSTokenFromIdpToken(string stsUrl, string idpToken, bool cleanToken)
             {
                 var request = GetWebRequest(stsUrl);
+
 
                 var postContent = GetFormPost(idpToken);
 
@@ -327,6 +358,9 @@ namespace FCSAmerica.McGruff.TokenGenerator
                 }
 
                 string stsBody = GetResponseContent(request.GetResponse());
+
+                 
+                request.Abort();
 
                 var stsToken = GetTokenFromBody(stsBody);
 
@@ -455,6 +489,8 @@ namespace FCSAmerica.McGruff.TokenGenerator
                 request.UseDefaultCredentials = true;
                 WebResponse response = request.GetResponse();
                 var host =  response.ResponseUri.Scheme + "://" + response.ResponseUri.Host;
+                response.Close();
+                request.Abort();
                 return host;
             }
 

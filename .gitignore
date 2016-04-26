@@ -17,3 +17,4 @@ PublishProfiles
 *.DS_Store
 *.DotSettings.user
 *.local
+*passwords.txt

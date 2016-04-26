@@ -1,22 +1,55 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Net.Mime;
+using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TokenGenerator;
 
 namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
 {
+
+    
     [TestClass]
     public class UnitTest1
     {
-        private const string AUDITINFO_SERVICE_ENDPOINT = "https://devinternal.fcsamerica.net/mcgruff/v2/rest/api/auditInfo";
+        private const string AUDITINFO_SERVICE_ENDPOINT =
+            "https://devinternal.fcsamerica.net/mcgruff/v2/rest/api/auditInfo";
+
         private const string AUTHENTICATION_ENDPOINT = "https://devinternal.fcsamerica.net/mcgruff/adminui/";
+
+        private Dictionary<string, string> _passwords;
+        private Dictionary<string, string> Passwords
+        {
+            get
+            {
+                if (_passwords == null)
+                {
+                    _passwords = new Dictionary<string, string>();
+                    string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    path = Path.GetDirectoryName(path + "\\..\\..\\..");
+                    // passwords.txt is a tab delimited text file with the username in the first field and password in the second.  - this file is not commited to source control.
+                    string[] lines = File.ReadAllLines(path + "\\passwords.txt");
+                    foreach (var line in lines)
+                    {
+                        string[] fields = line.Split('\t');
+                        _passwords.Add(fields[0], fields[1]);
+                    }
+                }
+                return _passwords;
+            }
+        }
+
 
         [TestMethod]
         public void SecurityContext_GetInstanceWithForceNewInstanceTrue_ReturnsNewInstance()
         {
+
             var securityContext1 = SecurityContext.GetInstance("MyApplicationName", "MyPartnerName", true);
             var securityContext2 = SecurityContext.GetInstance("MyApplicationName", "MyPartnerName", true);
             Assert.AreNotEqual(securityContext1, securityContext2);
@@ -131,7 +164,9 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
         [TestMethod]
         public void SecurityContextWithCredendialsSupplied_ReturnsValidServiceTokenAndAuditInfo()
         {
-            var securityContext = new SecurityContext(new NetworkCredential("agrilytic_o", "w3dec1s1onf0ry0u", "fcsamerica"), "MyAppName", "MyPartnerName");
+            var securityContext =
+                new SecurityContext(new NetworkCredential("agrilytic_o", Passwords["agrilytic_o"], "fcsamerica"), "MyAppName",
+                    "MyPartnerName");
             securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
             securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT;
 
@@ -143,10 +178,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
         }
 
 
-       // [TestMethod]
+        // [TestMethod]
         public void RequestingAToken_ForTesterL_ReturnsValidToken()
         {
-            var securityContext = new SecurityContext(new NetworkCredential("testerl", "s0G75A%JqqNzNU^X9FHgyH", "fcsamerica"), "MyAppName", "MyPartnerName");
+            var securityContext =
+                new SecurityContext(new NetworkCredential("testerl", Passwords["testerl"], "fcsamerica"),
+                    "MyAppName", "MyPartnerName");
             securityContext.AuditInfoServiceEndpoint = "https://devfcma.fcsamerica.net/mcgruff/web/";
             securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT;
 
@@ -160,19 +197,21 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
         [TestMethod, Ignore]
         public void RequestingAToken_ForFCMATester_ReturnsValidTokenWithTheCorrectPartnerName()
         {
-            var securityContext = new SecurityContext(new NetworkCredential("FCSATest2@maky.midam.farm", "America02"), "MyAppName", null);
-            securityContext.AuditInfoServiceEndpoint = "https://internal.fcsamerica.net/mcgruff/v2/rest/api/auditInfo"; ;
+            var securityContext = new SecurityContext(new NetworkCredential("FCSATest2@maky.midam.farm", Passwords["FCSATest2@maky.midam.farm"]),
+                "MyAppName", null);
+            securityContext.AuditInfoServiceEndpoint = "https://internal.fcsamerica.net/mcgruff/v2/rest/api/auditInfo";
+            ;
             securityContext.AuthenticationEndpoint = "https://fcma.fcsamerica.net/mcgruff/web/";
 
             var serviceToken = securityContext.ServiceToken;
             var auditInfo = securityContext.AuditInfo;
 
             Assert.IsFalse(String.IsNullOrEmpty(serviceToken));
-            Assert.IsFalse(String.IsNullOrEmpty(auditInfo));  // validate partner name is correct.
+            Assert.IsFalse(String.IsNullOrEmpty(auditInfo)); // validate partner name is correct.
         }
 
 
-         [TestMethod]
+        [TestMethod]
         public void SecurityContext_SettingEndpoints_CreatesValidTokens()
         {
             var securityContext = SecurityContext.GetInstance("MyAppName", "MyPartnerName", true);
@@ -187,11 +226,14 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
         }
 
 
-        //[TestMethod]
-        // This test passes when ran one-off but as a batch it doesnt pass.
-        public void SecurityContextInstance_WithProvidedConstructorWithNetworkCredentials_ReturnsTokenForThoseCredentials()
+        [TestMethod]
+        //This test passes when ran one-off but as a batch it doesnt pass.
+        public void
+            SecurityContextInstance_WithProvidedConstructorWithNetworkCredentialsCalledMoreThanOnce_ReturnsTokenForThoseCredentials()
         {
-            var securityContext = new SecurityContext(new NetworkCredential("agrilytic_o", "w3dec1s1onf0ry0u", "fcsamerica"),"MyApplicationName", "MyPartnerName");
+           var securityContext =
+                new SecurityContext(new NetworkCredential("agrilytic_o", Passwords["agrilytic_o"], "fcsamerica"),
+                    "MyApplicationName", "MyPartnerName");
             securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
             securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT;
 
@@ -199,16 +241,30 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
             var serviceToken = securityContext.ServiceToken;
             var auditInfo = securityContext.AuditInfo;
 
+            securityContext =
+              new SecurityContext(new NetworkCredential("agrilytic_o", Passwords["agrilytic_o"], "fcsamerica"),
+                  "MyApplicationName", "MyPartnerName");
+            securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
+            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT;
+
+
+            serviceToken = securityContext.ServiceToken;
+            auditInfo = securityContext.AuditInfo;
+
             Assert.IsFalse(String.IsNullOrEmpty(serviceToken));
             Assert.IsFalse(String.IsNullOrEmpty(auditInfo));
         }
 
-       // [TestMethod]
-        public void SecurityContextInstance_WithProvidedConstructorWithNetworkCredentialsAndOverwittenHomeRealm_ReturnsTokenForThoseCredentials()
+        // [TestMethod]
+        public void
+            SecurityContextInstance_WithProvidedConstructorWithNetworkCredentialsAndOverwittenHomeRealm_ReturnsTokenForThoseCredentials
+            ()
         {
-            var securityContext = new SecurityContext(new NetworkCredential("boyerc", "****"), "MyApplicationName","MyPartnerName");
+            var securityContext = new SecurityContext(new NetworkCredential("boyerc", "****"), "MyApplicationName",
+                "MyPartnerName");
             securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
-            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT + "?homeRealm=dmzfs.fcsamerica.com&realm=devinternal.fcsamerica.net:AGRIPOINT";
+            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT +
+                                                     "?homeRealm=dmzfs.fcsamerica.com&realm=devinternal.fcsamerica.net:AGRIPOINT";
 
             var serviceToken = securityContext.ServiceToken;
             var auditInfo = securityContext.AuditInfo;
@@ -217,12 +273,13 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
             Assert.IsFalse(String.IsNullOrEmpty(auditInfo));
         }
 
-       // [TestMethod]
+        // [TestMethod]
         public void SecurityContextInstance_WithOverwittenRealm_ReturnsTokenWithRealm()
         {
             var securityContext = SecurityContext.GetInstance("UnitTestApp", "PartnerA", true);
             securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
-            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT + "?realm=devinternal.fcsamerica.net:AGRIPOINT";
+            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT +
+                                                     "?realm=devinternal.fcsamerica.net:AGRIPOINT";
 
 
             var serviceToken = securityContext.ServiceToken;
@@ -250,9 +307,14 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
 
 
         [TestMethod]
-        public void SecurityContextInstance_WithOverwittenPartnerNameAndApplicationName_ReturnsAuditInfoWithCorrectPartnerNameAndAppplicationName()
+        public void
+            SecurityContextInstance_WithOverwittenPartnerNameAndApplicationName_ReturnsAuditInfoWithCorrectPartnerNameAndAppplicationName
+            ()
         {
-            var securityContext = SecurityContext.GetInstance("http://DevTitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems", "MyBogusApplication", "MyBogusPartner", true);
+            var securityContext =
+                SecurityContext.GetInstance(
+                    "http://DevTitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems",
+                    "MyBogusApplication", "MyBogusPartner", true);
             var serviceToken = securityContext.ServiceToken;
             var auditInfo = securityContext.AuditInfo;
 
@@ -265,9 +327,14 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
         }
 
         [TestMethod]
-        public void SecurityContextInstance_WithOverwittenApplicationName_ReturnsAuditInfoWithPartnerNameFromTokenAndAppplicationName()
+        public void
+            SecurityContextInstance_WithOverwittenApplicationName_ReturnsAuditInfoWithPartnerNameFromTokenAndAppplicationName
+            ()
         {
-            var securityContext = SecurityContext.GetInstance("http://DevTitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems", "MyBogusApplication", string.Empty, true);
+            var securityContext =
+                SecurityContext.GetInstance(
+                    "http://DevTitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems",
+                    "MyBogusApplication", string.Empty, true);
 
             var serviceToken = securityContext.ServiceToken;
             var auditInfo = securityContext.AuditInfo;
@@ -281,18 +348,24 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
         }
 
         [TestMethod]
-        public void SecurityContextWithDefaultCredendialsAndNoECSForFCMAEndpoint_ReturnsValidServiceTokenAndResultsFormWebAPICall()
+        public void
+            SecurityContextWithDefaultCredendialsAndNoECSForFCMAEndpoint_ReturnsValidServiceTokenAndResultsFormWebAPICall
+            ()
         {
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
             var securityContext = SecurityContext.GetInstance("MyApplicationName", string.Empty, true);
-            securityContext.AuthenticationEndpoint = "https://makydevweb10.maky.midam.farm/enterprisetokenawareapplication/?fcsa=";
+            securityContext.AuthenticationEndpoint =
+                "https://makydevweb10.maky.midam.farm/enterprisetokenawareapplication/?fcsa=";
 
             var serviceToken = securityContext.ServiceToken;
 
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("https://makydevweb10.maky.midam.farm/accountnumberapi/api/LoanNumberService/GetLoanNumber?loanType=L");
+            HttpWebRequest webRequest =
+                (HttpWebRequest)
+                    WebRequest.Create(
+                        "https://makydevweb10.maky.midam.farm/accountnumberapi/api/LoanNumberService/GetLoanNumber?loanType=L");
             webRequest.Headers.Add("Authorization", serviceToken);
-            HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse();
+            HttpWebResponse response = (HttpWebResponse) webRequest.GetResponse();
             string result;
             using (var responseStream = response.GetResponseStream())
             {
@@ -301,12 +374,89 @@ namespace FCSAmerica.McGruff.TokenGenerator.UnitTests
                     result = reader.ReadToEnd();
                 }
             }
-            
+
             Assert.IsTrue(response.StatusCode == HttpStatusCode.OK);
             Assert.IsFalse(String.IsNullOrEmpty(result));
             Assert.IsFalse(String.IsNullOrEmpty(serviceToken));
-            
 
+
+        }
+
+
+
+
+        [TestMethod]
+        public void
+            SecurityContextInstance_WithProvidedConstructorWithNetworkCredentialsForNWFCS_ReturnsTokenForThoseCredentials
+            ()
+        {
+            var securityContext = new SecurityContext(new NetworkCredential("drawal", Passwords["drawal"], "NFCS"),
+                "MyApplicationName", "MyPartnerName");
+            securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
+            securityContext.AuthenticationEndpoint = "https://inttestnwfcs.fcsamerica.net/mcgruff/adminui/";
+
+
+            var serviceToken = securityContext.ServiceToken;
+            var auditInfo = securityContext.AuditInfo;
+
+            Assert.IsFalse(String.IsNullOrEmpty(serviceToken));
+            Assert.IsFalse(String.IsNullOrEmpty(auditInfo));
+        }
+
+
+
+        [TestMethod]
+        public void SecurityContextInstance_WithProvidedIdPTokenOverridded_ReturnsValidSTSToken()
+        {
+            var securityContext =
+                SecurityContext.GetInstance(
+                    "http://DevTitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems",
+                    "MyBogusApplication", "MyBogusPartner", true);
+
+            var securityToken =
+                new WSTrustTokenGenerator().GetToken(
+                    "https://testfs.fcsamerica.com/adfs/services/trust/13/windowsmixed",
+                    "https://devsts.fcsamerica.net/");
+                securityContext.IdpTokenOverride = securityToken;
+
+            var serviceToken = securityContext.ServiceToken;
+            var auditInfo = securityContext.AuditInfo;
+
+            var auditInfoBytes = Convert.FromBase64String(auditInfo);
+            var jsonAuditInfo = Encoding.UTF8.GetString(auditInfoBytes);
+            JObject jobject = JsonConvert.DeserializeObject<JObject>(jsonAuditInfo);
+
+            Assert.AreEqual("MyBogusPartner", jobject["SignedData"]["PartnerName"]);
+            Assert.AreEqual("MyBogusApplication", jobject["SignedData"]["Application"]);
+        }
+
+
+
+
+        [TestMethod]
+        public void SecurityContextWithDefaultCredendialsAndNoECS_CreatedTwice_ReturnsValidServiceTokenAndAuditInfo()
+        {
+            var securityContext = SecurityContext.GetInstance("MyApplicationName", "MyPartnerName", true);
+            securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
+            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT;
+
+            var serviceToken = securityContext.ServiceToken;
+            var auditInfo = securityContext.AuditInfo;
+
+            Assert.IsFalse(String.IsNullOrEmpty(serviceToken));
+            Assert.IsFalse(String.IsNullOrEmpty(auditInfo));
+
+            securityContext = new SecurityContext(new NetworkCredential("testerl", Passwords["testerl"],"fcsameria.com"), "MyApplicationName", "MyPartnerName");
+
+
+            securityContext.AuditInfoServiceEndpoint = AUDITINFO_SERVICE_ENDPOINT;
+            securityContext.AuthenticationEndpoint = AUTHENTICATION_ENDPOINT;
+
+            serviceToken = securityContext.ServiceToken;
+            auditInfo = securityContext.AuditInfo;
+
+            Assert.IsFalse(String.IsNullOrEmpty(serviceToken));
+            Assert.IsFalse(String.IsNullOrEmpty(auditInfo));
         }
 
 
