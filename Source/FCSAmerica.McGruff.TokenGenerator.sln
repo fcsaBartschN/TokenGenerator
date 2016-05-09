@@ -9,6 +9,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FCSAmerica.McGruff.TokenGen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FCSAmerica.McGruff.WSTrustTokenGenerator", "WSTrustTokenGenerator\Source\TokenGenerator\TokenGenerator\FCSAmerica.McGruff.WSTrustTokenGenerator.csproj", "{CD58C90C-1143-4DE4-9186-7D623BECB2B9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{A97ADD70-6F2C-4EC3-8CDB-64817707B015}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenGenerator.BrowserBased", "TokenGenerator.BrowserBased\TokenGenerator.BrowserBased.csproj", "{125C48D5-5886-4F88-B198-EC8060198BE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenGenerator.BrowserBased.ConsoleTest", "TokenGenerator.BrowserBased.ConsoleTest\TokenGenerator.BrowserBased.ConsoleTest.csproj", "{FD6B5FDE-2683-4754-9A36-C903FD8B9F9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenGenerator.BrowserBased.IntegrationTests", "TokenGenerator.BrowserBased.IntegrationTests\TokenGenerator.BrowserBased.IntegrationTests.csproj", "{2C1824FB-8C57-4B51-B12F-5CDEA327B501}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +38,18 @@ Global
 		{CD58C90C-1143-4DE4-9186-7D623BECB2B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD58C90C-1143-4DE4-9186-7D623BECB2B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD58C90C-1143-4DE4-9186-7D623BECB2B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{125C48D5-5886-4F88-B198-EC8060198BE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{125C48D5-5886-4F88-B198-EC8060198BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{125C48D5-5886-4F88-B198-EC8060198BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{125C48D5-5886-4F88-B198-EC8060198BE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD6B5FDE-2683-4754-9A36-C903FD8B9F9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD6B5FDE-2683-4754-9A36-C903FD8B9F9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD6B5FDE-2683-4754-9A36-C903FD8B9F9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD6B5FDE-2683-4754-9A36-C903FD8B9F9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C1824FB-8C57-4B51-B12F-5CDEA327B501}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C1824FB-8C57-4B51-B12F-5CDEA327B501}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C1824FB-8C57-4B51-B12F-5CDEA327B501}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C1824FB-8C57-4B51-B12F-5CDEA327B501}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
