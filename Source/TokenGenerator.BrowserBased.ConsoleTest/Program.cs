@@ -12,15 +12,14 @@ namespace TokenGenerator.BrowserBased.ConsoleTest
             var ecsAddress = ConfigurationManager.AppSettings["ECSServerAddress"];
             var applicationName = ConfigurationManager.AppSettings["ApplicationName"];
             var partnerName = ConfigurationManager.AppSettings["PartnerName"];
-
+            
             var securityContext = BrowserBasedSecurityContext.GetInstance(applicationName, partnerName);
-
+            
             Console.WriteLine("ApplicationName:" + securityContext.ApplicationName);
             Console.WriteLine("PartnerName:" + securityContext.PartnerName);
             Console.WriteLine("\nServiceToken:" + securityContext.ServiceToken);
             Console.WriteLine("\nAuditInfo:" + securityContext.AuditInfo);
             Console.WriteLine("\nDecoded AuditInfo:" + DecodedBase64(securityContext.AuditInfo));
-
 
             Console.ReadLine();
         }

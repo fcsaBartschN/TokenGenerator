@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using mshtml;
-using SHDocVw;
+using System.Windows.Forms;
 
 namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 {
@@ -17,58 +15,49 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
         private int _browserRedirectCount;
 
-        private readonly InternetExplorer _browser;
+        private readonly WebBrowser _browser;
 
-        private TaskCompletionSource<string> _taskCompletionSource;
+        private string _stsToken;
 
-        public event EventHandler<TokenRetrievedEventArgs> TokenRetrievalCompletion;
 
-        public event EventHandler<Exception> TokenRetrievalError;
-        
         public BrowserTokenRetriever(string authenticationUrl, string issuingAuthority)
         {
             _authenticationUrl = authenticationUrl;
             _issuingAuthority = issuingAuthority;
 
-            _browser = new InternetExplorer();
+            _browser = new WebBrowser();
             _browser.Visible = false;
-            _browser.NavigateComplete2 += _browser_NavigateComplete2;
-            _browser.DocumentComplete += browser_DocumentComplete;
-            _browser.NavigateError += browser_NavigateError;
-
-            TokenRetrievalError += TokenRetriever_TokenRetrievalError;
-            TokenRetrievalCompletion += TokenRetriever_TokenRetrievalCompletion;
+            _browser.AllowNavigation = true;
+            _browser.Navigated += _browser_Navigated;
+            _browser.DocumentCompleted += _browser_DocumentCompleted;
         }
 
-        public Task<string> RetrieveToken()
+        public string RetrieveToken()
         {
-            _taskCompletionSource = new TaskCompletionSource<string>();
+            _browser.Navigate(_authenticationUrl);
 
-            try
+            while (_stsToken == null)
             {
-                _browser.Navigate2(_authenticationUrl);
+                Application.DoEvents();
             }
-            catch (Exception ex)
-            {
-                RaiseTokenRetrievalError(ex);
-            }
-            return _taskCompletionSource.Task;
+
+            return _stsToken;
         }
 
-        void browser_DocumentComplete(object pDisp, ref object url)
+        void _browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             try
             {
                 _browserRedirectCount++;
 
-                var currentBrowser = (pDisp as WebBrowser);
+                var currentBrowser = (sender as WebBrowser);
                 if (currentBrowser == null)
                 {
                     RaiseTokenRetrievalError(new Exception("WebBrowser is null."));
                     return;
                 }
 
-                var document = currentBrowser.Document as HTMLDocumentClass;
+                var document = currentBrowser.Document;
 
                 if (document == null)
                 {
@@ -76,26 +65,26 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                     return;
                 }
                 _traceSource.TraceInformation("\nBrowser_DocumentComplete Count: " + _browserRedirectCount);
-                
+
                 //_traceSource.TraceInformation("\n\nHtml:\n{0}\n", (document.body == null) ? document.toString() : document.body.innerHTML);
 
-                if (document.activeElement != null)
+                if (document.ActiveElement != null)
                 {
-                    var wsResultElement = document.getElementsByName("wresult");
-                    if (wsResultElement != null)
+                    var wsResultElement = document.All.GetElementsByName("wresult");
+                    if (wsResultElement != null && wsResultElement.Count > 0)
                     {
 
-                        var wsResultHtmlElement = wsResultElement.item(0) as HTMLInputElement;
+                        var wsResultValue = wsResultElement[0].GetAttribute("value");
 
-                        if (wsResultHtmlElement != null)
+                        if (wsResultValue != null)
                         {
                             var issuerRedirectUrlSearchText = string.Format("<Issuer>{0}</Issuer>", _issuingAuthority);
 
-                            if (wsResultHtmlElement.defaultValue.IndexOf(issuerRedirectUrlSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                            if (wsResultValue.IndexOf(issuerRedirectUrlSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
                             {
                                 // stop we have the token.
-                                var stsToken = wsResultHtmlElement.value;
-                                RaiseTokenRetrievalCompletion(new TokenRetrievedEventArgs { Token = stsToken });
+                                var stsToken = wsResultValue;
+                                RaiseTokenRetrievalCompletion(stsToken);
                             }
                         }
                     }
@@ -106,80 +95,38 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                     _traceSource.TraceInformation("\nMaxRedirectLoopCount reached. Stopping browser and returning back empty token.");
 
                     //Raise TokenRetrievalCompletion with empty token
-                    RaiseTokenRetrievalCompletion(new TokenRetrievedEventArgs { Token = null });
+                    RaiseTokenRetrievalCompletion(string.Empty);
                 }
             }
             catch (Exception ex)
             {
                 RaiseTokenRetrievalError(ex);
-                _traceSource.TraceEvent(TraceEventType.Error, 0, "Error Occured during DocumentComplete.\n{0}", ex.ToString());
             }
         }
 
-        void browser_NavigateError(object pDisp, ref object url, ref object Frame, ref object StatusCode, ref bool Cancel)
+        void _browser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
-            var x = pDisp;
-            var y = StatusCode;
-            Cancel = true;
-            RaiseTokenRetrievalError(new Exception("Navigation error at url: " + url));
-        }
-        void _browser_NavigateComplete2(object pDisp, ref object URL)
-        {
-
-            var x = pDisp;
-            _traceSource.TraceInformation("\nBrowser Navigation completed to url: {0}", URL);
+            _traceSource.TraceInformation("\nBrowser Navigation completed to url: {0}", e.Url);
         }
 
-        private void QuitBrowser()
+        private void RaiseTokenRetrievalCompletion(string token)
         {
-            if (_browser != null)
-            {
-                _browser.Quit();
-            }
-        }
-        
-        private void RaiseTokenRetrievalCompletion(TokenRetrievedEventArgs e)
-        {
-            EventHandler<TokenRetrievedEventArgs> handler = TokenRetrievalCompletion;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            _stsToken = token;
         }
 
         private void RaiseTokenRetrievalError(Exception ex)
         {
-            EventHandler<Exception> handler = TokenRetrievalError;
-            if (handler != null)
-            {
-                handler(this, ex);
-            }
-        }
+            _traceSource.TraceEvent(TraceEventType.Error, 0, "Error Occured during DocumentComplete.\n{0}", ex.ToString());
 
-        void TokenRetriever_TokenRetrievalCompletion(object sender, TokenRetrievedEventArgs e)
-        {
-            QuitBrowser();
-
-            if (_taskCompletionSource != null)
-            {
-                _taskCompletionSource.TrySetResult(e.Token);
-            }
-
-        }
-
-        void TokenRetriever_TokenRetrievalError(object sender, Exception ex)
-        {
-            QuitBrowser();
-
-            if (_taskCompletionSource != null)
-            {
-                _taskCompletionSource.SetException(ex);
-            }
+            _stsToken = string.Empty;
         }
 
         public void Dispose()
         {
-            QuitBrowser();
+            if (_browser != null)
+            {
+                _browser.Dispose();
+            }
         }
     }
 }

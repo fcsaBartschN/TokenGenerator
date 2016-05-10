@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 {
@@ -8,15 +9,15 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
     {
         private readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
 
-        private const int DefaultTimeoutInMiliSeconds = 30000;
-        
+        private const int DefaultTimeoutInMiliSeconds = 10000;
+
 
         public BrowserBasedServiceToken(string ecsServiceAddress, string applicationName, string partnerName)
             : base(ecsServiceAddress, applicationName, partnerName)
         {
 
         }
-        
+
         protected override void RefreshToken()
         {
             _traceSource.TraceInformation("\nStarted using BrowserBasedTokenRetriever using {0}.", AuthenticationEndpoint);
@@ -24,17 +25,19 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             try
             {
                 string stsToken = null;
-                string issuingAuthority = this.ConfigItems["v2.FcsaIssuingAuthority"];
+                string issuingAuthority = ConfigItems["v2.FcsaIssuingAuthority"];
 
-                using (var t = new BrowserTokenRetriever(AuthenticationEndpoint, issuingAuthority))
+                var securityContextRetreiver = new Thread(() =>
                 {
-                    var retrieveTokenTask = t.RetrieveToken();
-                    if (retrieveTokenTask.Wait(DefaultTimeoutInMiliSeconds))
+                    using (var t = new BrowserTokenRetriever(AuthenticationEndpoint, issuingAuthority))
                     {
-                        stsToken = retrieveTokenTask.Result;
+                        stsToken = t.RetrieveToken();
                     }
-                }
-
+                });
+                securityContextRetreiver.SetApartmentState(ApartmentState.STA);
+                securityContextRetreiver.Start();
+                securityContextRetreiver.Join(DefaultTimeoutInMiliSeconds);
+                
                 _token = !string.IsNullOrEmpty(stsToken) ? CleanToken(stsToken) : stsToken;
 
                 _traceSource.TraceInformation("\nCompleted retrieving token from BrowerBasedTokenRetriever.");

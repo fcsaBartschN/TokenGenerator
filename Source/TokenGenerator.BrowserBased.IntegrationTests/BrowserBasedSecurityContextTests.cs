@@ -8,7 +8,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
     {
         [TestCase("FCSA")]
         [TestCase("NWFCS")]
-        public void SSecurityContextBrowser_WithECSAddress_GetsTokenAndAuditInfo(string partnerName)
+        public void BrowserBasedSecurityContext_WithECSAddress_GetsTokenAndAuditInfo(string partnerName)
         {
             var ecsAddress = "http://devtitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems";
 
@@ -27,7 +27,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
 
         [TestCase("FCSA")]
         [TestCase("NWFCS")]
-        public void SecurityContext_WithDocuClickProxyAddress_GetTokenAndAuditInfo(string partnerName)
+        public void BrowserBasedSecurityContext_WithDocuClickProxyAddress_GetTokenAndAuditInfo(string partnerName)
         {
             var ecsAddress = "https://devinternal.fcsamerica.net/DocuClick/v3/REST/api/Proxy/EnterpriseConfigurationStore/v1/ConfigItems/";
             var securityContext = BrowserBasedSecurityContext.GetInstance(ecsAddress, "DocIndexer", partnerName, forceNewInstance: true);
