@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>FCSAmerica.McGruff.TokenGenerator.BrowserBased</id>
-        <version>2.0.0</version>
+        <version>1.0.0</version>
         <title>FCSAmerica.McGruff.TokenGenerator.BrowserBased</title>
         <authors>Farm Credit Services of America</authors>
         <owners>Farm Credit Services of America</owners>
@@ -18,14 +18,12 @@
             <frameworkAssembly assemblyName="System.Web.Extensions" targetFramework="" />
             <frameworkAssembly assemblyName="System.Xml" targetFramework="" />			
         </frameworkAssemblies>
-		<dependencies>
-			<dependency id="Newtonsoft.Json"/>
-		</dependencies>
     </metadata>
     <files>
-        <file src="..\Source\TokenGenerator.BrowserBased\bin\release\FCSAmerica.McGruff.TokenGenerator.BrowserBased.dll" target="lib\net45\FCSAmerica.McGruff.TokenGenerator.BrowserBased.dll" />
-		<file src="..\Source\TokenGenerator.BrowserBased\bin\release\Interop.SHDocVw.dll" target="lib\net45\Interop.SHDocVw.dll" />		
+        <file src="..\Source\TokenGenerator.BrowserBased\bin\release\FCSAmerica.McGruff.TokenGenerator.BrowserBased.dll" target="lib\net45\FCSAmerica.McGruff.TokenGenerator.BrowserBased.dll" />		
         <file src="..\Source\TokenGenerator.BrowserBased\bin\release\FCSAmerica.McGruff.TokenGenerator.BrowserBased.pdb" target="lib\net45\FCSAmerica.McGruff.TokenGenerator.BrowserBased.pdb" />
+		<file src="..\Source\TokenGenerator.BrowserBased\bin\release\Interop.SHDocVw.dll" target="lib\net45\Interop.SHDocVw.dll" />		
+		<file src="..\Source\TokenGenerator.BrowserBased\bin\release\Microsoft.mshtml.dll" target="lib\net45\Microsoft.mshtml.dll" />		
         <file src="..\Source\TokenGenerator.BrowserBased\Readme.txt" target="Readme.txt" />
     </files>
 </package>
