@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>FCSAmerica.McGruff.TokenGenerator.BrowserBased</id>
+        <version>2.0.0</version>
+        <title>FCSAmerica.McGruff.TokenGenerator.BrowserBased</title>
+        <authors>Farm Credit Services of America</authors>
+        <owners>Farm Credit Services of America</owners>
+        <projectUrl>https://fcsamerica.visualstudio.com/DefaultCollection/McGruff</projectUrl>
+        <iconUrl>http://teamtest/NuGetBioStar.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A lightweight library for generating a ServiceToken and AuditInfo token for partner client application using Browser based redirect. This library can be leveraged by .NET applications greater than or equal to version 4.5</description>
+        <copyright>Copyright FCSA 2016</copyright>
+        <tags>McGruff Authentication Federation Multi-Tenant, Mutitenant Partner</tags>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System.Configuration" targetFramework="" />
+			<frameworkAssembly assemblyName="System.Web" targetFramework="" />            
+            <frameworkAssembly assemblyName="System.Web.Extensions" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml" targetFramework="" />			
+        </frameworkAssemblies>
+		<dependencies>
+			<dependency id="Newtonsoft.Json"/>
+		</dependencies>
+    </metadata>
+    <files>
+        <file src="..\Source\TokenGenerator.BrowserBased\bin\release\FCSAmerica.McGruff.TokenGenerator.BrowserBased.dll" target="lib\net45\FCSAmerica.McGruff.TokenGenerator.BrowserBased.dll" />
+		<file src="..\Source\TokenGenerator.BrowserBased\bin\release\Interop.SHDocVw.dll" target="lib\net45\Interop.SHDocVw.dll" />		
+        <file src="..\Source\TokenGenerator.BrowserBased\bin\release\FCSAmerica.McGruff.TokenGenerator.BrowserBased.pdb" target="lib\net45\FCSAmerica.McGruff.TokenGenerator.BrowserBased.pdb" />
+        <file src="..\Source\TokenGenerator.BrowserBased\Readme.txt" target="Readme.txt" />
+    </files>
+</package>

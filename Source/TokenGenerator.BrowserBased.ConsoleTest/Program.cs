@@ -13,7 +13,7 @@ namespace TokenGenerator.BrowserBased.ConsoleTest
             var applicationName = ConfigurationManager.AppSettings["ApplicationName"];
             var partnerName = ConfigurationManager.AppSettings["PartnerName"];
 
-            var securityContext = BrowserBasedSecurityContext.GetInstance(ecsAddress, applicationName, partnerName, forceNewInstance: false);
+            var securityContext = BrowserBasedSecurityContext.GetInstance(applicationName, partnerName);
 
             Console.WriteLine("ApplicationName:" + securityContext.ApplicationName);
             Console.WriteLine("PartnerName:" + securityContext.PartnerName);
