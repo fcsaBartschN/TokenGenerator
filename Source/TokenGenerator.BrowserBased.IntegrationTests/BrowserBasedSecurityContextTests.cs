@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
 {
     [TestFixture]
-    public class SecurityContextBrowserTests
+    public class BrowserBasedSecurityContextTests
     {
         [TestCase("FCSA")]
         [TestCase("NWFCS")]
@@ -12,7 +12,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
         {
             var ecsAddress = "http://devtitan.FCSAmerica.com/EnterpriseConfigurationStore/v1/RESTServices/api/ConfigItems";
 
-            var securityContext = SecurityContextBrowser.GetInstance(ecsAddress, "DocUpDoc", partnerName, forceNewInstance: true);
+            var securityContext = BrowserBasedSecurityContext.GetInstance(ecsAddress, "DocIndexer", partnerName, forceNewInstance: true);
 
             Assert.IsNotNull(securityContext);
 
@@ -30,7 +30,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
         public void SecurityContext_WithDocuClickProxyAddress_GetTokenAndAuditInfo(string partnerName)
         {
             var ecsAddress = "https://devinternal.fcsamerica.net/DocuClick/v3/REST/api/Proxy/EnterpriseConfigurationStore/v1/ConfigItems/";
-            var securityContext = SecurityContextBrowser.GetInstance(ecsAddress, "DocUpDoc", partnerName, forceNewInstance: true);
+            var securityContext = BrowserBasedSecurityContext.GetInstance(ecsAddress, "DocIndexer", partnerName, forceNewInstance: true);
 
             Assert.IsNotNull(securityContext);
 

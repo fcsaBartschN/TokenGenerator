@@ -8,24 +8,23 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 {
     public class BrowserTokenRetriever : IDisposable
     {
-        readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
+        private readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
 
         private const int MaxRedirectLoopCount = 10;
 
         private readonly string _authenticationUrl;
         private readonly string _issuingAuthority;
 
-        private readonly InternetExplorer _browser;
-
         private int _browserRedirectCount;
+
+        private readonly InternetExplorer _browser;
 
         private TaskCompletionSource<string> _taskCompletionSource;
 
         public event EventHandler<TokenRetrievedEventArgs> TokenRetrievalCompletion;
 
         public event EventHandler<Exception> TokenRetrievalError;
-
-
+        
         public BrowserTokenRetriever(string authenticationUrl, string issuingAuthority)
         {
             _authenticationUrl = authenticationUrl;
@@ -39,21 +38,6 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
             TokenRetrievalError += TokenRetriever_TokenRetrievalError;
             TokenRetrievalCompletion += TokenRetriever_TokenRetrievalCompletion;
-
-            //_browser.BeforeNavigate2 += _browser_BeforeNavigate2;
-
-        }
-        void _browser_BeforeNavigate2(object pDisp, ref object url, ref object Flags, ref object TargetFrameName, ref object PostData, ref object Headers, ref bool Cancel)
-        {
-            _traceSource.TraceInformation("\nBrowser Navigation started to url: {0}", url);
-
-            if (_browserRedirectCount != 0 && url.ToString().ToLower() == _authenticationUrl.ToLower())
-            {
-                // we are redirecting back to starting _authenticationUrl, lets stop we don't have token.
-                _traceSource.TraceInformation("\nCancelling Browser Navigation to url: {0}", url);
-                Cancel = true;
-                RaiseTokenRetrievalCompletion(new TokenRetrievedEventArgs { Token = null });
-            }
         }
 
         public Task<string> RetrieveToken()
@@ -92,9 +76,8 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                     return;
                 }
                 _traceSource.TraceInformation("\nBrowser_DocumentComplete Count: " + _browserRedirectCount);
-
-
-                _traceSource.TraceInformation("\n\nHtml:\n{0}\n", (document.body == null) ? document.toString() : document.body.innerHTML);
+                
+                //_traceSource.TraceInformation("\n\nHtml:\n{0}\n", (document.body == null) ? document.toString() : document.body.innerHTML);
 
                 if (document.activeElement != null)
                 {
@@ -106,9 +89,9 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
                         if (wsResultHtmlElement != null)
                         {
-                            var searchText = string.Format("<Issuer>{0}</Issuer>", _issuingAuthority);
+                            var issuerRedirectUrlSearchText = string.Format("<Issuer>{0}</Issuer>", _issuingAuthority);
 
-                            if (wsResultHtmlElement.defaultValue.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+                            if (wsResultHtmlElement.defaultValue.IndexOf(issuerRedirectUrlSearchText, StringComparison.OrdinalIgnoreCase) >= 0)
                             {
                                 // stop we have the token.
                                 var stsToken = wsResultHtmlElement.value;
@@ -129,7 +112,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             catch (Exception ex)
             {
                 RaiseTokenRetrievalError(ex);
-                //_traceSource.TraceEvent(TraceEventType.Error, 0, "Error Occured during DocumentComplete.\n{0}", ex.ToString());
+                _traceSource.TraceEvent(TraceEventType.Error, 0, "Error Occured during DocumentComplete.\n{0}", ex.ToString());
             }
         }
 
@@ -154,15 +137,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                 _browser.Quit();
             }
         }
-
-        //private void StopBrowser()
-        //{
-        //    if (_browser != null)
-        //    {
-        //        _browser.Stop();
-        //    }
-        //}
-
+        
         private void RaiseTokenRetrievalCompletion(TokenRetrievedEventArgs e)
         {
             EventHandler<TokenRetrievedEventArgs> handler = TokenRetrievalCompletion;
@@ -194,8 +169,6 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
         void TokenRetriever_TokenRetrievalError(object sender, Exception ex)
         {
-            //StopBrowser();
-
             QuitBrowser();
 
             if (_taskCompletionSource != null)

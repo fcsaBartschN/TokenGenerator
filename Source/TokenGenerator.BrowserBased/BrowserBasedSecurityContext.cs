@@ -5,15 +5,15 @@ using System.Diagnostics;
 
 namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 {
-    public class SecurityContextBrowser
+    public class BrowserBasedSecurityContext
     {
         private readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
 
         private ServiceToken _serviceToken;
         private static object _lock = new object();
 
-        private static Dictionary<string, SecurityContextBrowser> _instances;
-        public static SecurityContextBrowser GetInstance(string ecsServiceAddress, string applicationName, string partnerName, bool forceNewInstance)
+        private static Dictionary<string, BrowserBasedSecurityContext> _instances;
+        public static BrowserBasedSecurityContext GetInstance(string ecsServiceAddress, string applicationName, string partnerName, bool forceNewInstance)
         {
             if (string.IsNullOrEmpty(partnerName))
             {
@@ -24,7 +24,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             {
                 lock (_lock)
                 {
-                    _instances = new Dictionary<string, SecurityContextBrowser>();
+                    _instances = new Dictionary<string, BrowserBasedSecurityContext>();
                 }
             }
 
@@ -32,24 +32,24 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             {
                 if (!_instances.ContainsKey(partnerName) || forceNewInstance)
                 {
-                    _instances[partnerName] = new SecurityContextBrowser(ecsServiceAddress, applicationName, partnerName);
+                    _instances[partnerName] = new BrowserBasedSecurityContext(ecsServiceAddress, applicationName, partnerName);
                 }
             }
             return _instances[partnerName];
         }
 
-        public static SecurityContextBrowser GetInstance(string applicationName, string partnerName, bool forceNewInstance)
+        public static BrowserBasedSecurityContext GetInstance(string applicationName, string partnerName, bool forceNewInstance)
         {
             return GetInstance(ConfigurationManager.AppSettings["ECSServerAddress"], applicationName, partnerName, forceNewInstance);
         }
 
-        public static SecurityContextBrowser GetInstance(string applicationName, string partnerName)
+        public static BrowserBasedSecurityContext GetInstance(string applicationName, string partnerName)
         {
             return GetInstance(ConfigurationManager.AppSettings["ECSServerAddress"], applicationName, partnerName, false);
         }
 
 
-        private SecurityContextBrowser(string ecsServiceAddress, string applicationName, string partnerName)
+        private BrowserBasedSecurityContext(string ecsServiceAddress, string applicationName, string partnerName)
         {
             _traceSource.TraceInformation("\nInitialied PartnerClientSecurityToken for partner: ", partnerName);
 

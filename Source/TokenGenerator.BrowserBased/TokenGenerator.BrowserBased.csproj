@@ -62,7 +62,7 @@
     </Compile>
     <Compile Include="BrowserBasedServiceToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecurityContextBrowser.cs" />
+    <Compile Include="BrowserBasedSecurityContext.cs" />
     <Compile Include="BrowserTokenRetriever.cs" />
     <Compile Include="TokenRetrievedEventArgs.cs" />
   </ItemGroup>

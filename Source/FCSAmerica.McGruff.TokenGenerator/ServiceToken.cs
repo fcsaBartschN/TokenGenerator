@@ -22,7 +22,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
         private static object _tokenLock = new object();
         private static object _auditInfoLock = new object();
 
-        private const string DefaultPartnerName = "FCSA";
+        private const string DefaultServiceProviderPartnerName = "FCSA";
 
         private string _authenticationEndpoint;
 
@@ -225,7 +225,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
                     allPartnerConfigurationSettings.ForEach((x) => { _configItems[x.Key] = x.Value; });
 
                     //Get settings for specific partners
-                    var partnerId = String.IsNullOrEmpty(_partnerName) ? DefaultPartnerName : _partnerName;
+                    var partnerId = String.IsNullOrEmpty(_partnerName) ? DefaultServiceProviderPartnerName : _partnerName;
                     var partnerSpecificConfigurationList = allConfigList.ConfigurationList.FirstOrDefault(_ => _.PartnerId == partnerId);
                     if (partnerSpecificConfigurationList != null)
                     {

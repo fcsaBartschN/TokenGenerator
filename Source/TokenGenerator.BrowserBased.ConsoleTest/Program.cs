@@ -9,11 +9,11 @@ namespace TokenGenerator.BrowserBased.ConsoleTest
     {
         static void Main(string[] args)
         {
-            //var ecsAddress = ConfigurationManager.AppSettings["ECSServerAddress"];
+            var ecsAddress = ConfigurationManager.AppSettings["ECSServerAddress"];
             var applicationName = ConfigurationManager.AppSettings["ApplicationName"];
             var partnerName = ConfigurationManager.AppSettings["PartnerName"];
 
-            var securityContext = SecurityContextBrowser.GetInstance(applicationName, partnerName);
+            var securityContext = BrowserBasedSecurityContext.GetInstance(ecsAddress, applicationName, partnerName, forceNewInstance: false);
 
             Console.WriteLine("ApplicationName:" + securityContext.ApplicationName);
             Console.WriteLine("PartnerName:" + securityContext.PartnerName);

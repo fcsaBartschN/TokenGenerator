@@ -6,7 +6,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
     public class BrowserBasedServiceToken : ServiceToken
     {
-        protected readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
+        private readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
 
         private const int DefaultTimeoutInMiliSeconds = 30000;
         

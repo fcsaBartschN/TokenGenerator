@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ServiceTokenTests.cs" />
-    <Compile Include="SecurityContextBrowserTests.cs" />
+    <Compile Include="BrowserBasedSecurityContextTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
