@@ -9,7 +9,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
     {
         private readonly TraceSource _traceSource = new TraceSource("FCSAmerica.McGruff.TokenGenerator");
 
-        private const int DefaultTimeoutInMiliSeconds = 10000;
+        private const int DefaultTimeoutInMiliSeconds = 30000;
 
 
         public BrowserBasedServiceToken(string ecsServiceAddress, string applicationName, string partnerName)
