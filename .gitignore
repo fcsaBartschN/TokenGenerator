@@ -18,3 +18,11 @@ PublishProfiles
 *.DotSettings.user
 *.local
 *passwords.txt
+
+
+# NCrunch
+*.ncrunch*
+_NCrunch_*
+.*crunch*.local.xml
+*.crunchsolution.*
+

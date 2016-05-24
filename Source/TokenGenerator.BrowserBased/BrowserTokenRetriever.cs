@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
@@ -35,12 +36,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
         public string RetrieveToken()
         {
             _browser.Navigate(_authenticationUrl);
-
-            while (_stsToken == null)
-            {
-                Application.DoEvents();
-            }
-
+            Application.Run();
             return _stsToken;
         }
 
@@ -53,7 +49,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                 var currentBrowser = (sender as WebBrowser);
                 if (currentBrowser == null)
                 {
-                    RaiseTokenRetrievalError(new Exception("WebBrowser is null."));
+                    StartExitingThreadWithError(new Exception("WebBrowser is null."));
                     return;
                 }
 
@@ -61,7 +57,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
                 if (document == null)
                 {
-                    RaiseTokenRetrievalError(new Exception("document is null."));
+                    StartExitingThreadWithError(new Exception("document is null."));
                     return;
                 }
                 _traceSource.TraceInformation("\nBrowser_DocumentComplete Count: " + _browserRedirectCount);
@@ -84,7 +80,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                             {
                                 // stop we have the token.
                                 var stsToken = wsResultValue;
-                                RaiseTokenRetrievalCompletion(stsToken);
+                                StartExitingThreadWithToken(stsToken);
                             }
                         }
                     }
@@ -93,14 +89,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                 if (_browserRedirectCount == MaxRedirectLoopCount)
                 {
                     _traceSource.TraceInformation("\nMaxRedirectLoopCount reached. Stopping browser and returning back empty token.");
-
-                    //Raise TokenRetrievalCompletion with empty token
-                    RaiseTokenRetrievalCompletion(string.Empty);
+                    StartExitingThreadWithToken(string.Empty);
                 }
             }
             catch (Exception ex)
             {
-                RaiseTokenRetrievalError(ex);
+                StartExitingThreadWithError(ex);
             }
         }
 
@@ -109,16 +103,16 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             _traceSource.TraceInformation("\nBrowser Navigation completed to url: {0}", e.Url);
         }
 
-        private void RaiseTokenRetrievalCompletion(string token)
+        private void StartExitingThreadWithToken(string token)
         {
             _stsToken = token;
+            Application.ExitThread();
         }
 
-        private void RaiseTokenRetrievalError(Exception ex)
+        private void StartExitingThreadWithError(Exception ex)
         {
             _traceSource.TraceEvent(TraceEventType.Error, 0, "Error Occured during DocumentComplete.\n{0}", ex.ToString());
-
-            _stsToken = string.Empty;
+            Application.ExitThread();
         }
 
         public void Dispose()
