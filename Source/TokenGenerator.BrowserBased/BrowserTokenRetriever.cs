@@ -31,6 +31,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             _browser.AllowNavigation = true;
             _browser.Navigated += _browser_Navigated;
             _browser.DocumentCompleted += _browser_DocumentCompleted;
+            _browser.ScriptErrorsSuppressed = true;
         }
 
         public string RetrieveToken()
