@@ -47,6 +47,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                 _traceSource.TraceEvent(TraceEventType.Error, 0, "\nException occured during TokenRetriever RetrieveToken.\n" + UnwrapException(ex).ToString());
             }
 
+            SetExpireDateFromToken();
         }
 
         private Exception UnwrapException(Exception exception)
