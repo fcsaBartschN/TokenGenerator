@@ -68,12 +68,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                 if (document.ActiveElement != null)
                 {
                     var wsResultElement = document.All.GetElementsByName("wresult");
-                    if (wsResultElement != null && wsResultElement.Count > 0)
+                    if (wsResultElement.Count > 0)
                     {
 
                         var wsResultValue = wsResultElement[0].GetAttribute("value");
 
-                        if (wsResultValue != null)
+                        if (!string.IsNullOrEmpty(wsResultValue))
                         {
                             var issuerRedirectUrlSearchText = string.Format("<Issuer>{0}</Issuer>", _issuingAuthority);
 
@@ -83,7 +83,16 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                                 var stsToken = wsResultValue;
                                 StartExitingThreadWithToken(stsToken);
                             }
+
                         }
+                        else
+                        {
+                            TraceHtml("wresult value is empty.", document);
+                        }
+                    }
+                    else
+                    {
+                        TraceHtml("wresult element not found.", document);
                     }
                 }
 
@@ -97,6 +106,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             {
                 StartExitingThreadWithError(ex);
             }
+        }
+
+        private void TraceHtml(string message, HtmlDocument document)
+        {
+            var documentHtml = (document.Body == null) ? document.ToString() : document.Body.InnerHtml;
+            _traceSource.TraceEvent(TraceEventType.Verbose, 0, "\n" + message + " Document Html:\n " + documentHtml);
         }
 
         void _browser_Navigated(object sender, WebBrowserNavigatedEventArgs e)

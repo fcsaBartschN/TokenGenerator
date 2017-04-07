@@ -78,9 +78,6 @@
       <Name>FCSAmerica.McGruff.WSTrustTokenGenerator</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="passwords.txt" />
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
