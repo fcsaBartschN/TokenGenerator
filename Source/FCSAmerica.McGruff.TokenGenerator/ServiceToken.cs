@@ -237,7 +237,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
                     if (partnerSpecificConfigurationList != null)
                     {
                         var partnerSpecificConfigurationSettings = partnerSpecificConfigurationList.ConfigurationSettings;
-                        
+
                         //replace settings in all settings if exists in partner
                         partnerSpecificConfigurationSettings.ForEach((x) =>
                         {
@@ -247,7 +247,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
                             }
                             else
                             {
-                                _configItems.Add(x.Key,x.Value);
+                                _configItems.Add(x.Key, x.Value);
                             }
                         });
                     }
@@ -450,6 +450,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
 
         protected void SetExpireDateFromToken()
         {
+
             XmlDocument samlToken = new XmlDocument();
             samlToken.LoadXml(_token);
 
@@ -473,7 +474,8 @@ namespace FCSAmerica.McGruff.TokenGenerator
             }
 
             if (DateTime.TryParse(innerText, out defaultExpireDate))
-            { // && !innerText.EndsWith("Z")
+            {
+                // && !innerText.EndsWith("Z")
                 _tokenExpireDate = defaultExpireDate.ToUniversalTime();
             }
         }

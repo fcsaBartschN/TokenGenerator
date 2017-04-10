@@ -32,7 +32,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             {
                 if (!instances.ContainsKey(partnerName) || forceNewInstance)
                 {
-                    instances[partnerName] = new BrowserBasedSecurityContext(ecsServiceAddress, applicationName, partnerName);
+                    TokenCacheObject tokenCache = new TokenCacheObject(Environment.UserName, partnerName, applicationName, ecsServiceAddress);
+                    if (forceNewInstance)
+                    {
+                        tokenCache.ClearCache();
+                    }
+                    instances[partnerName] = new BrowserBasedSecurityContext(ecsServiceAddress, applicationName, partnerName, tokenCache);
                 }
             }
             return instances[partnerName];
@@ -49,11 +54,10 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
         }
 
 
-        private BrowserBasedSecurityContext(string ecsServiceAddress, string applicationName, string partnerName)
+        private BrowserBasedSecurityContext(string ecsServiceAddress, string applicationName, string partnerName, ITokenCache tokenCache)
         {
             _traceSource.TraceInformation("\nInitialized PartnerClientSecurityToken for partner: ", partnerName);
-
-            _serviceToken = new BrowserBasedServiceToken(ecsServiceAddress, applicationName, partnerName);
+            _serviceToken = new BrowserBasedServiceToken(ecsServiceAddress, applicationName, partnerName, tokenCache);
 
         }
         

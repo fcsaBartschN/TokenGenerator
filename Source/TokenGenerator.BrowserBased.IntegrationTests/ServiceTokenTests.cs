@@ -6,7 +6,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
     public class ServiceTokenTests
     {
         
-        [TestCase("FCSA","https://devinternal.fcsamerica.net/mcgruff/AdminUI/")]
+        [TestCase("FCSA","https://devfcsa.fcsamerica.net/mcgruff/AdminUI/")]
         [TestCase("NWFCS", "https://devnwfcs.fcsamerica.net/mcgruff/reference/web")]
         public void SecurityContext_WithECSAddress_GetsTokenAndAuditInfo(string partnerName, string authenticationEndpoint)
         {

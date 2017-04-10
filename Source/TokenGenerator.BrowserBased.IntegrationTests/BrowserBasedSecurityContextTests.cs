@@ -89,12 +89,10 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
         [TestCase("NWFCS")]
         public void BrowserBasedSecurityContext_WithDocuClickProxyAddress_GetTokenAndAuditInfo(string partnerName)
         {
-            var ecsAddress = "https://devinternal.fcsamerica.net/DocuClick/v3/REST/api/Proxy/EnterpriseConfigurationStore/v1/ConfigItems/";
+            var ecsAddress = "https://devinternal.fcsamerica.net/DocuClick/v4/REST/api/Proxy/EnterpriseConfigurationStore/v1/ConfigItems/";
             var securityContext = BrowserBasedSecurityContext.GetInstance(ecsAddress, "DocIndexer", partnerName, forceNewInstance: true);
 
             Assert.IsNotNull(securityContext);
-
-
             Assert.IsNotNull(securityContext.ServiceToken);
 
             Console.WriteLine("ApplicationName:" + securityContext.ApplicationName);
