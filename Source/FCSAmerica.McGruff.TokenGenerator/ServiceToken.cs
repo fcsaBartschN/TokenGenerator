@@ -475,7 +475,6 @@ namespace FCSAmerica.McGruff.TokenGenerator
 
             if (DateTime.TryParse(innerText, out defaultExpireDate))
             {
-                // && !innerText.EndsWith("Z")
                 _tokenExpireDate = defaultExpireDate.ToUniversalTime();
             }
         }

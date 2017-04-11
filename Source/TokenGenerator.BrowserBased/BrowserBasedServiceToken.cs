@@ -23,7 +23,20 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
         {
             _traceSource.TraceInformation("\nStarted using BrowserBasedTokenRetriever using {0}.", AuthenticationEndpoint);
 
-            _token = _cache?.LoadFromCache();
+            try
+            {
+                _token = _cache?.LoadFromCache();
+                if (_token != null)
+                {
+                    SetExpireDateFromToken();
+                }
+            }
+            catch
+            {
+                _token = null;
+                _cache?.ClearCache();
+            }
+
             if (string.IsNullOrEmpty(_token) || IsExpiredOrAboutToExpire)
             {
                 try
