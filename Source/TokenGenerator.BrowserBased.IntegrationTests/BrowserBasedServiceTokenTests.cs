@@ -73,6 +73,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
             var tokenText = $"<Conditions NotBefore=\"{utcNow}\" NotOnOrAfter=\"{utcOneHourFromNow}\"></Conditions>";
 
             A.CallTo(() => cache.LoadFromCache()).Returns(tokenText);
+            A.CallTo(() => cache.LoadAuditInfoFromCache()).Returns(null);
             var browserBasedToken = new BrowserBasedServiceToken(ecsAddress, "DocIndexer", "FCSA", cache);
 
             var token = browserBasedToken.Token;
@@ -91,6 +92,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
             var utcOneHourFromNow = utcNow.AddHours(1);
 
             A.CallTo(() => cache.LoadFromCache()).Returns($"<Conditions NotBefore=\"{utcNow}\" NotOnOrAfter=\"{utcOneHourFromNow}\" ></Conditions>");
+            A.CallTo(() => cache.LoadAuditInfoFromCache()).Returns(null);
             var browserBasedToken = new BrowserBasedServiceToken(ecsAddress, "DocIndexer", "FCSA", cache);
 
             var token = browserBasedToken.Token;
