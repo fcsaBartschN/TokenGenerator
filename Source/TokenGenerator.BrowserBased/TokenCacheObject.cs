@@ -7,6 +7,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
     {
         private readonly string _cacheDirectory;
         private readonly string _cacheFileName;
+        private readonly string _cacheAuditInfoFileName;
 
         public TokenCacheObject(string user = null, string partnerId = null, string applicationName = null, string ecsServerName = null, string cacheDirectory = null)
         {
@@ -24,11 +25,17 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                 fileName = fileName.Replace(invalidCharacter, '-');
             }
             _cacheFileName = _cacheDirectory + fileName;
+            _cacheAuditInfoFileName = _cacheDirectory + fileName + "_AUDITINFO";
         }
 
         public virtual void SaveToCache(string stringToCache)
         {
             File.WriteAllText(_cacheFileName, stringToCache);
+        }
+
+        public virtual void SaveAuditInfoToCache(string stringToCache)
+        {
+            File.WriteAllText(_cacheAuditInfoFileName, stringToCache);
         }
 
         public virtual string LoadFromCache()
@@ -40,6 +47,15 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             return null;
         }
 
+        public virtual string LoadAuditInfoFromCache()
+        {
+            if (File.Exists(_cacheAuditInfoFileName))
+            {
+                return File.ReadAllText(_cacheAuditInfoFileName, Encoding.ASCII);
+            }
+            return null;
+        }
+        
         public virtual string GetCacheDirectory()
         {
             return _cacheDirectory;
@@ -53,6 +69,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
         public virtual void ClearCache()
         {
             File.Delete(_cacheFileName);
+            File.Delete(_cacheAuditInfoFileName);
         }
     }
 }

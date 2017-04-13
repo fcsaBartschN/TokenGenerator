@@ -26,6 +26,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             try
             {
                 _token = _cache?.LoadFromCache();
+                AuditInfo = _cache?.LoadAuditInfoFromCache();
                 if (_token != null)
                 {
                     SetExpireDateFromToken();
@@ -34,7 +35,8 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             catch
             {
                 _token = null;
-                _cache?.ClearCache();
+                AuditInfo = null;
+                 _cache?.ClearCache();
             }
 
             if (string.IsNullOrEmpty(_token) || IsExpiredOrAboutToExpire)
@@ -55,15 +57,21 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
                     securityContextRetreiver.SetApartmentState(ApartmentState.STA);
                     securityContextRetreiver.Start();
                     securityContextRetreiver.Join(DefaultTimeoutInMiliSeconds);
+                    AuditInfo = null;
 
                     _token = !string.IsNullOrEmpty(stsToken) ? CleanToken(stsToken) : stsToken;
+
                     _cache?.SaveToCache(_token);
+                    _cache?.SaveAuditInfoToCache(AuditInfo);
+
                     _traceSource.TraceInformation("\nCompleted retrieving token from BrowerBasedTokenRetriever.");
                 }
                 catch (Exception ex)
                 {
                     _traceSource.TraceEvent(TraceEventType.Error, 0,
                         "\nException occured during TokenRetriever RetrieveToken.\n" + UnwrapException(ex).ToString());
+
+                    AuditInfo = null;
                     _cache?.ClearCache();
                 }
 
