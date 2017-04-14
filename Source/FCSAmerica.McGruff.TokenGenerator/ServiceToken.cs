@@ -139,7 +139,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
             //set { _token = value; }
         }
 
-        private string _auditInfo;
+        protected string _auditInfo;
 
         public string AuditInfo
         {
@@ -339,7 +339,7 @@ namespace FCSAmerica.McGruff.TokenGenerator
         }
 
 
-        private string RefreshAuditInfo()
+        protected virtual string RefreshAuditInfo()
         {
             var request = GetWebRequest(this.AuditInfoServiceEndpoint);
             request.Headers.Add("Authorization", "SAML " + this.Token);
