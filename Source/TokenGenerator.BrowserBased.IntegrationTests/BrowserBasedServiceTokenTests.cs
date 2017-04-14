@@ -106,6 +106,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
             var ecsAddress = "https://devinternal.fcsamerica.net/DocuClick/v4/REST/api/Proxy/EnterpriseConfigurationStore/v1/ConfigItems/";
             var cache = A.Fake<ITokenCache>();
             A.CallTo(() => cache.LoadFromCache()).Returns(null);
+            A.CallTo(() => cache.ClearCache()).DoesNothing();
             A.CallTo(() => cache.SaveToCache(A<string>.Ignored)).Throws<Exception>();
             var browserBasedToken = new BrowserBasedServiceToken(ecsAddress, "DocIndexer", "FCSA", cache);
 
@@ -120,11 +121,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased.IntegrationTests
             var ecsAddress = "https://devinternal.fcsamerica.net/DocuClick/v4/REST/api/Proxy/EnterpriseConfigurationStore/v1/ConfigItems/";
             var cache = A.Fake<ITokenCache>();
             A.CallTo(() => cache.LoadFromCache()).Returns("INVALID XML");
+            A.CallTo(() => cache.ClearCache()).DoesNothing();
             var browserBasedToken = new BrowserBasedServiceToken(ecsAddress, "DocIndexer", "FCSA", cache);
 
             var token = browserBasedToken.Token;
 
-            A.CallTo(() => cache.ClearCache()).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => cache.ClearCache()).MustHaveHappened(Repeated.AtLeast.Once);
             A.CallTo(() => cache.SaveToCache(A<string>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
