@@ -19,6 +19,13 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             _cache = cache;
         }
 
+        private void ClearAllCacheInformation()
+        {
+            _token = null;
+            _auditInfo = null;
+            _cache?.ClearCache();
+        }
+
         protected override string RefreshAuditInfo()
         {
             try
@@ -31,9 +38,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             }
             catch
             {
-                _token = null;
-                _auditInfo = null;
-                _cache?.ClearCache();
+                ClearAllCacheInformation();
             }
 
             _auditInfo = base.RefreshAuditInfo();
@@ -56,14 +61,12 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
             }
             catch
             {
-                _token = null;
-                _auditInfo = null;
-                _cache?.ClearCache();
+                ClearAllCacheInformation();
             }
 
             if (string.IsNullOrEmpty(_token) || IsExpiredOrAboutToExpire)
             {
-                _cache?.ClearCache();
+                ClearAllCacheInformation();
                 try
                 {
                     string stsToken = null;
