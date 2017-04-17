@@ -49,10 +49,9 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
         protected override void RefreshToken()
         {
-            _traceSource.TraceInformation("\nStarted using BrowserBasedTokenRetriever using {0}.", AuthenticationEndpoint);
-
             try
             {
+                _traceSource.TraceInformation("\nBrowserBasedTokenRetriever checking cache");
                 _token = _cache?.LoadFromCache();
                 if (_token != null)
                 {
@@ -66,6 +65,7 @@ namespace FCSAmerica.McGruff.TokenGenerator.BrowserBased
 
             if (string.IsNullOrEmpty(_token) || IsExpiredOrAboutToExpire)
             {
+                _traceSource.TraceInformation("\nStarted retrieving token from BrowserBasedTokenRetriever using {0}.", AuthenticationEndpoint);
                 ClearAllCacheInformation();
                 try
                 {
